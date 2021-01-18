@@ -2134,10 +2134,23 @@ class Consul(object):
                 params=args_to_params(locals()),
             )
 
-        def list_tokens(self, token=None):
+        def list_tokens(self, policy=None, role=None, authmethod=None, token=None):
             token = token or self.agent.token
+
+            params = []
+            token = token or self.agent.token
+            if token:
+                params.append(("token", token))
+            if policy:
+                params.append(("policy", policy))
+            if role:
+                params.append(("role", role))
+            if authmethod:
+                params.append(("authmethod", authmethod))
+
             return self.agent.http.get(
-                CB.json(), "/v1/acl/tokens", params=args_to_params(locals())
+                CB.json(), "/v1/acl/tokens",
+                params=params
             )
 
         def create_policy(
